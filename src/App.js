@@ -7,7 +7,8 @@ import UpdatePage from "./routes/UpdatePage"
 
 function App() {
   return (
-    <>
+    // container class will give page side margins
+    <div className="container">
       <Router>
         <Routes>
           <Route exact path="/" element={<Home />} />
@@ -15,7 +16,7 @@ function App() {
           <Route path="/restaurants/:id" element={<RestaurantDetailPage />} />
         </Routes>
       </Router>
-    </>
+    </div>
   );
 }
 
