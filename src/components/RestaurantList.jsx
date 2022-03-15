@@ -15,10 +15,23 @@ function RestaurantList() {
             } catch (err) {
                 console.log('ERROR: ', err)
             }
-        }
+        };
 
         fetchData();
     }, [])
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await RestaurantFinder.delete(`/${id}`);
+            console.log(response);
+            // To update UI after deletion 
+            setRestaurants(restaurants.filter(restaurant => {
+                return restaurant.id !== id;
+            }))
+        } catch (err) {
+            console.log('ERROR: ', err);
+        }
+    }
 
     return (
         <div className="list-group">
@@ -46,7 +59,10 @@ function RestaurantList() {
                                     <button className="btn btn-warning">Update</button>
                                 </td>
                                 <td>
-                                    <button className="btn btn-danger">Delete</button>
+                                    {/* "() =>" will prevent function from running immediately and only on click */}
+                                    <button
+                                        onClick={() => handleDelete(restaurant.id)}
+                                        className="btn btn-danger">Delete</button>
                                 </td>
                             </tr>
                         )
