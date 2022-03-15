@@ -1,6 +1,25 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
+
+import RestaurantFinder from "../api/RestaurantFinder";
+import { RestaurantsContext } from '../context/RestaurantsContext';
 
 function RestaurantList() {
+    const { restaurants, setRestaurants } = useContext(RestaurantsContext);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Get all restaurants from server
+                const response = await RestaurantFinder.get("/")
+                // Store restaurant list in state
+                setRestaurants(response.data.data.restaurants);
+            } catch (err) {
+                console.log('ERROR: ', err)
+            }
+        }
+
+        fetchData();
+    }, [])
+
     return (
         <div className="list-group">
             <table className="table table-hover table-dark">
@@ -15,30 +34,23 @@ function RestaurantList() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Mcdonalds</td>
-                        <td>Honolulu</td>
-                        <td>$$$</td>
-                        <td>Rating</td>
-                        <td>
-                            <button className="btn btn-warning">Update</button>
-                        </td>
-                        <td>
-                            <button className="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Mcdonalds</td>
-                        <td>Honolulu</td>
-                        <td>$$$</td>
-                        <td>Rating</td>
-                        <td>
-                            <button className="btn btn-warning">Update</button>
-                        </td>
-                        <td>
-                            <button className="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
+                    {/* && Means will only render if restaurants exists */}
+                    {restaurants && restaurants.map(restaurant => {
+                        return (
+                            <tr key={restaurant.id}>
+                                <td>{restaurant.name}</td>
+                                <td>{restaurant.location}</td>
+                                <td>{"$".repeat(restaurant.price_range)}</td>
+                                <td>Reviews</td>
+                                <td>
+                                    <button className="btn btn-warning">Update</button>
+                                </td>
+                                <td>
+                                    <button className="btn btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                        )
+                    })}
                 </tbody>
             </table>
         </div>
