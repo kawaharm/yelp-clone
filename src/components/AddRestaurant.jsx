@@ -47,7 +47,8 @@ function AddRestaurant() {
                         <select
                             value={priceRange}
                             onChange={(e) => setPriceRange(e.target.value)}
-                            className="custom-select my-1 mr-sm-2">
+                            className="custom-select my-1"
+                            style={{ width: "80%" }}>
                             <option disabled>Price Range</option>
                             <option value="1">$</option>
                             <option value="2">$$</option>
@@ -60,7 +61,8 @@ function AddRestaurant() {
                         <button
                             onClick={handleSubmit}
                             type="submit"
-                            className="btn btn-primary">Add</button>
+                            className="btn btn-primary px-3"
+                            style={{ width: "30%" }}>Add</button>
                     </div>
                 </div>
             </form>

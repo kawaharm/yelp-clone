@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import RestaurantFinder from "../api/RestaurantFinder";
 import { RestaurantsContext } from '../context/RestaurantsContext';
+import StarRating from './StarRating';
 
 function RestaurantList() {
     const { restaurants, setRestaurants } = useContext(RestaurantsContext);
@@ -59,6 +60,18 @@ function RestaurantList() {
         }
     }
 
+    const renderRating = (restaurant) => {
+        if (!restaurant.count) {
+            return <span className="text-warning">0 reviews</span>
+        }
+        return (
+            <>
+                <StarRating rating={restaurant.id} />
+                <span className="text-warning ms-1">({restaurant.count})</span>
+            </>
+        )
+    }
+
     return (
         <div className="list-group">
             <table className="table table-hover table-dark">
@@ -80,7 +93,7 @@ function RestaurantList() {
                                 <td>{restaurant.name}</td>
                                 <td>{restaurant.location}</td>
                                 <td>{"$".repeat(restaurant.price_range)}</td>
-                                <td>Reviews</td>
+                                <td>{renderRating(restaurant)}</td>
                                 <td>
                                     {/* "() =>" will prevent function from running immediately and only on click */}
                                     <button
