@@ -1,10 +1,13 @@
 import React, { useContext, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import RestaurantFinder from "../api/RestaurantFinder";
 import { RestaurantsContext } from '../context/RestaurantsContext';
 
 function RestaurantList() {
     const { restaurants, setRestaurants } = useContext(RestaurantsContext);
+    // History of browser
+    let navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -20,7 +23,30 @@ function RestaurantList() {
         fetchData();
     }, [])
 
-    const handleDelete = async (id) => {
+    const handleUpdate = (e, id) => {
+        // To prevent event bubbling
+        // Without this, all parent/child elements above (ex. handleRestaurantSelect) will also run
+        e.stopPropagation();
+        try {
+            // Navigate to update page
+            navigate(`/restaurants/${id}/update`);
+        } catch (err) {
+            console.log('ERROR: ', err);
+        }
+    }
+
+    const handleRestaurantSelect = (id) => {
+        try {
+            // Navigate to detail page
+            navigate(`/restaurants/${id}`);
+        } catch (err) {
+            console.log('ERROR: ', err);
+        }
+    };
+
+    const handleDelete = async (e, id) => {
+        // To prevent event bubbling 
+        e.stopPropagation();
         try {
             const response = await RestaurantFinder.delete(`/${id}`);
             console.log(response);
@@ -50,18 +76,21 @@ function RestaurantList() {
                     {/* && Means will only render if restaurants exists */}
                     {restaurants && restaurants.map(restaurant => {
                         return (
-                            <tr key={restaurant.id}>
+                            <tr onClick={() => handleRestaurantSelect(restaurant.id)} key={restaurant.id}>
                                 <td>{restaurant.name}</td>
                                 <td>{restaurant.location}</td>
                                 <td>{"$".repeat(restaurant.price_range)}</td>
                                 <td>Reviews</td>
                                 <td>
-                                    <button className="btn btn-warning">Update</button>
+                                    {/* "() =>" will prevent function from running immediately and only on click */}
+                                    <button
+                                        onClick={(e) => handleUpdate(e, restaurant.id)}
+                                        className="btn btn-warning">Update</button>
                                 </td>
                                 <td>
                                     {/* "() =>" will prevent function from running immediately and only on click */}
                                     <button
-                                        onClick={() => handleDelete(restaurant.id)}
+                                        onClick={(e) => handleDelete(e, restaurant.id)}
                                         className="btn btn-danger">Delete</button>
                                 </td>
                             </tr>
